@@ -747,6 +747,16 @@
       const SPECIAL_FOOD_DURATION_MS = 5000;
       const SPECIAL_FOOD_SPAWN_CHANCE = 0.3;
       const SPECIAL_FOOD_COOLDOWN_MS = 7000;
+      const HAPTIC_PATTERNS = {
+        turn: 8,
+        start: [12],
+        food: [14],
+        specialFood: [18, 36, 18],
+        pause: 12,
+        resume: [8, 16, 8],
+        gameOver: [24, 34, 24],
+        win: [10, 18, 10, 18, 22]
+      };
 
       const MODES = {
         easy: {
@@ -815,6 +825,7 @@
       let overlaySubtitle = '';
       let lastFrameTime = performance.now();
       let lastStepAt = performance.now();
+      let lastHapticAt = 0;
       let theme = 'dark';
       let previousSnake = [];
       let boardTheme = {};
@@ -877,6 +888,43 @@
         return window.matchMedia('(hover: none) and (pointer: coarse)').matches || navigator.maxTouchPoints > 0;
       }
 
+      function canVibrate() {
+        return typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function';
+      }
+
+      function tryWebkitHapticBridge(kind) {
+        const handlers = window.webkit && window.webkit.messageHandlers;
+        if (!handlers) return false;
+
+        const handler = handlers.haptic || handlers.haptics;
+        if (!handler || typeof handler.postMessage !== 'function') return false;
+
+        try {
+          handler.postMessage({ kind });
+          return true;
+        } catch {
+          return false;
+        }
+      }
+
+      function triggerHaptic(kind, { force = false } = {}) {
+        if (!detectTouchInterface()) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+        const now = performance.now();
+        if (!force && now - lastHapticAt < 45) return;
+        lastHapticAt = now;
+
+        const pattern = HAPTIC_PATTERNS[kind] || HAPTIC_PATTERNS.turn;
+        if (canVibrate()) {
+          navigator.vibrate(pattern);
+          return;
+        }
+
+        // iPhone Safari may not expose vibrate; this supports app-wrapper bridges when available.
+        tryWebkitHapticBridge(kind);
+      }
+
       function syncTouchMode() {
         document.body.classList.toggle('touch-device', detectTouchInterface());
       }
@@ -935,6 +983,7 @@
         started = true;
         hideMenu();
         resetRound();
+        triggerHaptic('start', { force: true });
       }
 
       function randomCell() {
@@ -1059,6 +1108,7 @@
 
         if (directionQueue.length < 3) {
           directionQueue.push(next);
+          triggerHaptic('turn');
         }
       }
 
@@ -1083,6 +1133,7 @@
           startTickLoop();
         }
 
+        triggerHaptic(paused ? 'pause' : 'resume', { force: true });
         updateTouchPauseLabel();
       }
 
@@ -1195,6 +1246,7 @@
           spawnFoodBurst(head.x, head.y, false);
           spawnFood();
           spawnSpecialFood(now);
+          triggerHaptic('food');
 
           if (gameOver) {
             renderHud();
@@ -1207,6 +1259,7 @@
           score += SPECIAL_FOOD_POINTS;
           spawnFoodBurst(head.x, head.y, true);
           specialFood = null;
+          triggerHaptic('specialFood', { force: true });
         }
 
         if (!willGrow) {
@@ -1237,12 +1290,15 @@
         if (didWin) {
           overlayTitle = 'Board Cleared';
           overlaySubtitle = 'You filled every tile. Press R to run it back.';
+          triggerHaptic('win', { force: true });
         } else if (newHighScore) {
           overlayTitle = 'New High Score';
           overlaySubtitle = `${MODES[currentMode].label} best is now ${score}.`;
+          triggerHaptic('gameOver', { force: true });
         } else {
           overlayTitle = 'Game Over';
           overlaySubtitle = 'Press R to restart or M for menu.';
+          triggerHaptic('gameOver', { force: true });
         }
       }
 
