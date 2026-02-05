@@ -528,16 +528,35 @@
       }
 
       .hud {
-        align-items: flex-start;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+
+      .stats {
+        width: 100%;
+        justify-content: space-between;
       }
 
       .hud-actions {
         width: 100%;
-        justify-content: flex-start;
+        justify-content: stretch;
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
       }
 
       .mode-picker.compact {
+        grid-column: 1 / -1;
         max-width: none;
+      }
+
+      .hud-actions .btn {
+        width: 100%;
+      }
+
+      canvas {
+        width: min(100%, clamp(180px, min(90vw, 46svh), 440px));
       }
     }
 
@@ -557,6 +576,15 @@
 
       .theme-toggle {
         width: 100%;
+      }
+
+      .stats {
+        gap: 6px;
+      }
+
+      .stat {
+        min-width: 0;
+        flex: 1;
       }
 
       .touch-controls {
@@ -580,6 +608,19 @@
       .touch-btn.action {
         min-width: 0;
       }
+
+      canvas {
+        width: min(100%, clamp(165px, min(88vw, 40svh), 400px));
+      }
+    }
+
+    body.touch-device #menuBtn,
+    body.touch-device #themeToggleHud {
+      display: none;
+    }
+
+    body.touch-device .hud-actions {
+      grid-template-columns: 1fr;
     }
 
     @media (max-height: 760px) and (orientation: portrait) {
@@ -603,7 +644,7 @@
       }
 
       canvas {
-        width: min(100%, clamp(168px, min(90vw, 42svh), 440px));
+        width: min(100%, clamp(150px, min(86vw, 36svh), 360px));
       }
 
       .touch-btn {
