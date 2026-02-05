@@ -25,6 +25,11 @@
       --chip-text: #376187;
       --stat-text: #4e6985;
       --help-text: #456380;
+      --board-bg-a: #dff0ff;
+      --board-bg-b: #b8ddff;
+      --board-checker: rgba(255, 255, 255, 0.22);
+      --board-grid: rgba(35, 95, 143, 0.2);
+      --board-vignette: rgba(15, 46, 77, 0.16);
     }
 
     :root[data-theme='dark'] {
@@ -43,6 +48,11 @@
       --chip-text: #cae4ff;
       --stat-text: #a9c7e6;
       --help-text: #9cbadd;
+      --board-bg-a: #03132a;
+      --board-bg-b: #061f34;
+      --board-checker: rgba(102, 184, 255, 0.06);
+      --board-grid: rgba(149, 207, 255, 0.1);
+      --board-vignette: rgba(0, 0, 0, 0.35);
     }
 
     * {
@@ -407,7 +417,7 @@
       align-self: center;
       border-radius: 16px;
       border: 1px solid var(--canvas-border);
-      background: #071528;
+      background: var(--board-bg-a);
       box-shadow:
         inset 0 0 35px rgba(0, 0, 0, 0.38),
         0 10px 28px rgba(22, 53, 87, 0.26);
@@ -447,13 +457,13 @@
 
     .dpad {
       display: grid;
-      grid-template-columns: repeat(3, 62px);
-      grid-template-rows: repeat(3, 62px);
+      grid-template-columns: repeat(3, 74px);
+      grid-template-rows: repeat(3, 74px);
       grid-template-areas:
         ". up ."
         "left . right"
         ". down .";
-      gap: 8px;
+      gap: 10px;
     }
 
     .touch-btn {
@@ -461,10 +471,10 @@
       background: var(--surface-soft);
       color: var(--button-text);
       border-radius: 14px;
-      min-height: 50px;
-      min-width: 50px;
+      min-height: 62px;
+      min-width: 62px;
       padding: 0 10px;
-      font: 800 14px/1 'Manrope', sans-serif;
+      font: 800 18px/1 'Manrope', sans-serif;
       letter-spacing: 0.02em;
       touch-action: manipulation;
       -webkit-user-select: none;
@@ -479,32 +489,22 @@
 
     .touch-btn.dir-up {
       grid-area: up;
-      font-size: 24px;
+      font-size: 30px;
     }
 
     .touch-btn.dir-left {
       grid-area: left;
-      font-size: 24px;
+      font-size: 30px;
     }
 
     .touch-btn.dir-right {
       grid-area: right;
-      font-size: 24px;
+      font-size: 30px;
     }
 
     .touch-btn.dir-down {
       grid-area: down;
-      font-size: 24px;
-    }
-
-    .touch-actions {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(92px, 120px));
-      gap: 8px;
-    }
-
-    .touch-btn.action {
-      min-width: 92px;
+      font-size: 30px;
     }
 
     :root[data-theme='dark'] .menu-screen {
@@ -566,7 +566,7 @@
       }
 
       canvas {
-        width: min(100%, clamp(190px, min(92vw, 58svh), 520px));
+        width: min(100%, clamp(190px, min(92vw, 64svh), 560px));
       }
     }
 
@@ -605,22 +605,13 @@
 
       .dpad {
         align-self: center;
-        grid-template-columns: repeat(3, 54px);
-        grid-template-rows: repeat(3, 54px);
+        grid-template-columns: repeat(3, 68px);
+        grid-template-rows: repeat(3, 68px);
         gap: 6px;
       }
 
-      .touch-actions {
-        width: 100%;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-
-      .touch-btn.action {
-        min-width: 0;
-      }
-
       canvas {
-        width: min(100%, clamp(170px, min(90vw, 54svh), 460px));
+        width: min(100%, clamp(170px, min(90vw, 60svh), 500px));
       }
     }
 
@@ -654,16 +645,16 @@
       }
 
       canvas {
-        width: min(100%, clamp(150px, min(86vw, 44svh), 420px));
+        width: min(100%, clamp(150px, min(86vw, 50svh), 460px));
       }
 
       .touch-btn {
-        min-height: 40px;
+        min-height: 52px;
       }
 
       .dpad {
-        grid-template-columns: repeat(3, 44px);
-        grid-template-rows: repeat(3, 44px);
+        grid-template-columns: repeat(3, 58px);
+        grid-template-rows: repeat(3, 58px);
         gap: 6px;
       }
 
@@ -739,10 +730,6 @@
           <button type="button" class="touch-btn dir-right" data-touch-dir="right" aria-label="Move right">→</button>
           <button type="button" class="touch-btn dir-down" data-touch-dir="down" aria-label="Move down">↓</button>
         </div>
-        <div class="touch-actions" role="group" aria-label="Game controls">
-          <button id="touchPauseBtn" type="button" class="touch-btn action" aria-label="Pause or resume">Pause</button>
-          <button id="touchMenuBtn" type="button" class="touch-btn action" aria-label="Open menu">Menu</button>
-        </div>
       </section>
       <p class="help">Arrow keys/WASD on desktop. On iPhone, use the on-screen D-pad. Golden apples appear for 5 seconds and give bonus points.</p>
     </section>
@@ -794,8 +781,6 @@
       const menuBtn = document.getElementById('menuBtn');
       const themeToggleMenuBtn = document.getElementById('themeToggleMenu');
       const themeToggleHudBtn = document.getElementById('themeToggleHud');
-      const touchPauseBtn = document.getElementById('touchPauseBtn');
-      const touchMenuBtn = document.getElementById('touchMenuBtn');
       const touchDirectionButtons = Array.from(document.querySelectorAll('[data-touch-dir]'));
       const modeButtons = Array.from(document.querySelectorAll('.mode-button'));
 
@@ -832,6 +817,7 @@
       let lastStepAt = performance.now();
       let theme = 'dark';
       let previousSnake = [];
+      let boardTheme = {};
 
       function loadHighScores() {
         const defaults = { easy: 0, medium: 0, hard: 0 };
@@ -865,10 +851,22 @@
         theme = nextTheme === 'light' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', theme);
         localStorage.setItem(THEME_KEY, theme);
+        refreshBoardTheme();
 
         const label = theme === 'dark' ? 'Light Mode' : 'Dark Mode';
         themeToggleMenuBtn.textContent = label;
         themeToggleHudBtn.textContent = label;
+      }
+
+      function refreshBoardTheme() {
+        const style = getComputedStyle(document.documentElement);
+        boardTheme = {
+          bgA: style.getPropertyValue('--board-bg-a').trim() || '#03132a',
+          bgB: style.getPropertyValue('--board-bg-b').trim() || '#061f34',
+          checker: style.getPropertyValue('--board-checker').trim() || 'rgba(102, 184, 255, 0.06)',
+          grid: style.getPropertyValue('--board-grid').trim() || 'rgba(149, 207, 255, 0.1)',
+          vignette: style.getPropertyValue('--board-vignette').trim() || 'rgba(0, 0, 0, 0.35)'
+        };
       }
 
       function toggleTheme() {
@@ -1072,7 +1070,7 @@
       }
 
       function updateTouchPauseLabel() {
-        touchPauseBtn.textContent = paused && started && !gameOver ? 'Resume' : 'Pause';
+        // Touch pause button removed by design on mobile to prevent accidental taps.
       }
 
       function togglePause() {
@@ -1271,8 +1269,8 @@
 
       function drawBoardBackground(time) {
         const gradient = ctx.createLinearGradient(0, 0, BOARD, BOARD);
-        gradient.addColorStop(0, '#03132a');
-        gradient.addColorStop(1, '#061f34');
+        gradient.addColorStop(0, boardTheme.bgA);
+        gradient.addColorStop(1, boardTheme.bgB);
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, BOARD, BOARD);
 
@@ -1281,13 +1279,13 @@
         for (let y = 0; y < CELLS; y++) {
           for (let x = 0; x < CELLS; x++) {
             if ((x + y) % 2 === 0) {
-              ctx.fillStyle = `rgba(102, 184, 255, ${shimmer})`;
+              ctx.fillStyle = boardTheme.checker;
               ctx.fillRect(x * GRID, y * GRID, GRID, GRID);
             }
           }
         }
 
-        ctx.strokeStyle = 'rgba(149, 207, 255, 0.1)';
+        ctx.strokeStyle = boardTheme.grid;
         ctx.lineWidth = 1;
         for (let i = 0; i <= CELLS; i++) {
           const p = i * GRID;
@@ -1311,7 +1309,7 @@
           BOARD * 0.82
         );
         vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
-        vignette.addColorStop(1, 'rgba(0, 0, 0, 0.35)');
+        vignette.addColorStop(1, boardTheme.vignette);
         ctx.fillStyle = vignette;
         ctx.fillRect(0, 0, BOARD, BOARD);
       }
@@ -1571,8 +1569,6 @@
           setDirectionFromToken(button.dataset.touchDir);
         });
       });
-      bindTouchControl(touchPauseBtn, togglePause);
-      bindTouchControl(touchMenuBtn, showMenu);
 
       document.addEventListener('keydown', (event) => {
         const key = event.key.toLowerCase();
