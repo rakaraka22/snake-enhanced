@@ -465,8 +465,8 @@
 
     .dpad {
       display: grid;
-      grid-template-columns: repeat(3, 74px);
-      grid-template-rows: repeat(3, 74px);
+      grid-template-columns: repeat(3, 82px);
+      grid-template-rows: repeat(3, 82px);
       grid-template-areas:
         ". up ."
         "left . right"
@@ -478,11 +478,11 @@
       border: 1px solid var(--chip-border);
       background: var(--surface-soft);
       color: var(--button-text);
-      border-radius: 14px;
-      min-height: 62px;
-      min-width: 62px;
+      border-radius: 16px;
+      min-height: 70px;
+      min-width: 70px;
       padding: 0 10px;
-      font: 800 18px/1 'Manrope', sans-serif;
+      font: 800 20px/1 'Manrope', sans-serif;
       letter-spacing: 0.02em;
       touch-action: manipulation;
       -webkit-user-select: none;
@@ -497,22 +497,22 @@
 
     .touch-btn.dir-up {
       grid-area: up;
-      font-size: 30px;
+      font-size: 34px;
     }
 
     .touch-btn.dir-left {
       grid-area: left;
-      font-size: 30px;
+      font-size: 34px;
     }
 
     .touch-btn.dir-right {
       grid-area: right;
-      font-size: 30px;
+      font-size: 34px;
     }
 
     .touch-btn.dir-down {
       grid-area: down;
-      font-size: 30px;
+      font-size: 34px;
     }
 
     :root[data-theme='dark'] .menu-screen {
@@ -613,8 +613,8 @@
 
       .dpad {
         align-self: center;
-        grid-template-columns: repeat(3, 68px);
-        grid-template-rows: repeat(3, 68px);
+        grid-template-columns: repeat(3, 74px);
+        grid-template-rows: repeat(3, 74px);
         gap: 6px;
       }
 
@@ -657,12 +657,12 @@
       }
 
       .touch-btn {
-        min-height: 52px;
+        min-height: 56px;
       }
 
       .dpad {
-        grid-template-columns: repeat(3, 58px);
-        grid-template-rows: repeat(3, 58px);
+        grid-template-columns: repeat(3, 62px);
+        grid-template-rows: repeat(3, 62px);
         gap: 6px;
       }
 
@@ -1518,7 +1518,7 @@
         drawWrappedStroke(
           centers,
           bodyGradient,
-          GRID * 0.76,
+          GRID * 0.82,
           `hsla(${config.hue}, 92%, 60%, 0.45)`,
           15
         );
@@ -1527,9 +1527,9 @@
         highlightGradient.addColorStop(0, 'rgba(255, 255, 255, 0.36)');
         highlightGradient.addColorStop(0.45, 'rgba(255, 255, 255, 0.1)');
         highlightGradient.addColorStop(1, 'rgba(255, 255, 255, 0.04)');
-        drawWrappedStroke(centers, highlightGradient, GRID * 0.4);
+        drawWrappedStroke(centers, highlightGradient, GRID * 0.48);
 
-        const headRadius = GRID * (0.34 + 0.03 * Math.sin(time * 0.015));
+        const headRadius = GRID * (0.39 + 0.03 * Math.sin(time * 0.015));
         const forwardX = direction.x || 1;
         const forwardY = direction.y || 0;
         const sideX = -forwardY;
