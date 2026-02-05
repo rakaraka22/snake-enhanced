@@ -319,7 +319,7 @@
 
     .hud {
       display: flex;
-      justify-content: space-between;
+      justify-content: center;
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
@@ -329,6 +329,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
+      justify-content: center;
     }
 
     .stat {
@@ -363,6 +364,11 @@
       row-gap: 8px;
     }
 
+    /* Gameplay header buttons are intentionally removed to maximize board space. */
+    .hud-actions {
+      display: none !important;
+    }
+
     .mode-picker.compact {
       flex: 1 1 320px;
       max-width: 420px;
@@ -393,7 +399,7 @@
     }
 
     canvas {
-      width: min(100%, clamp(220px, min(92vw, 56svh), 620px));
+      width: min(100%, clamp(220px, min(92vw, 62svh), 620px));
       height: auto;
       aspect-ratio: 1;
       display: block;
@@ -556,7 +562,7 @@
       }
 
       canvas {
-        width: min(100%, clamp(180px, min(90vw, 46svh), 440px));
+        width: min(100%, clamp(180px, min(90vw, 52svh), 460px));
       }
     }
 
@@ -610,7 +616,7 @@
       }
 
       canvas {
-        width: min(100%, clamp(165px, min(88vw, 40svh), 400px));
+        width: min(100%, clamp(165px, min(88vw, 46svh), 420px));
       }
     }
 
@@ -644,7 +650,7 @@
       }
 
       canvas {
-        width: min(100%, clamp(150px, min(86vw, 36svh), 360px));
+        width: min(100%, clamp(150px, min(86vw, 40svh), 380px));
       }
 
       .touch-btn {
